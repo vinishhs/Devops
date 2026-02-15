@@ -1,0 +1,562 @@
+📦 Ansible Automation Process
+
+Ansible is an agentless automation tool used for:
+
+Configuration management
+
+Application deployment
+
+Provisioning
+
+Orchestration
+
+It connects to target machines using SSH and executes tasks defined in YAML playbooks.
+
+🧭 Step-by-Step Ansible Flow
+1️⃣ Install Ansible (Control Node)
+
+Install Ansible on the machine from where automation will run.
+
+sudo apt update
+sudo apt install ansible -y
+
+Verify
+ansible --version
+
+2️⃣ Prepare Managed Nodes
+
+Ensure the target systems have:
+
+SSH enabled
+
+Python installed
+
+Network connectivity from control node
+
+Test manually
+ssh user@target-ip
+
+
+If login works without issues, Ansible can manage the host.
+
+3️⃣ Create Inventory File
+
+Inventory defines which machines Ansible should manage.
+
+Default location:
+
+/etc/ansible/hosts
+
+
+Example:
+
+[web]
+192.168.1.10
+
+[db]
+192.168.1.20
+
+
+You can also create a custom inventory file.
+
+4️⃣ Test Connectivity (Ping Module)
+ansible all -m ping
+
+
+Expected result:
+
+SUCCESS
+
+
+This confirms SSH + Python access.
+
+5️⃣ Write a Playbook
+
+Playbooks are written in YAML and describe the desired state.
+
+Example – install_nginx.yml
+---
+- name: Install Nginx
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+6️⃣ Run the Playbook
+ansible-playbook install_nginx.yml
+
+
+Ansible will:
+
+Connect to hosts
+
+Execute tasks
+
+Show results
+
+7️⃣ Verify Changes
+
+Login to the managed node and confirm.
+
+systemctl status nginx
+
+
+Or check in browser:
+
+http://<server-ip>
+
+🧠 What Happens Internally?
+
+Reads inventory
+
+Connects via SSH
+
+Transfers module
+
+Executes tasks
+
+Returns output
+
+Cleans temporary files
+
+No agent installation required.
+
+📁 Recommended Project Structure
+ansible-project/
+│── inventory
+│── playbook.yml
+│── roles/
+│── group_vars/
+│── host_vars/
+
+
+This structure helps in organizing large environments.
+
+🚀 Common Ad-Hoc Commands
+
+Ad-hoc commands are one-time operations without writing playbooks.
+
+Install Package
+ansible web -m apt -a "name=git state=present" --become
+
+Restart Service
+ansible web -m service -a "name=nginx state=restarted" --become
+
+Check Disk Space
+ansible all -m command -a "df -h"
+
+🔐 Key Features of Ansible
+
+✔ Agentless architecture
+✔ Uses SSH (secure)
+✔ Human-readable YAML
+✔ Idempotent (no repeated unnecessary changes)
+✔ Easy to scale to hundreds of servers
+✔ Strong community modules
+
+🎯 Skills Gained
+
+Setting up control & managed nodes
+
+Writing playbooks
+
+Using modules
+
+Automating installations
+
+Running ad-hoc commands
+
+Understanding infrastructure automation
+
+
+
+
+
+
+  🚀 Jenkins Freestyle Job – GitHub Integration
+🎯 Goal
+
+Connect a GitHub repository to Jenkins and verify that the code is successfully cloned into the Jenkins workspace.
+
+Flow
+
+GitHub → Jenkins Freestyle Job → Workspace
+
+✅ Step 1 – Ensure Git is Installed on Jenkins Machine
+
+In Ubuntu VM:
+
+git --version
+
+
+If not installed:
+
+sudo apt install git -y
+
+
+Git is mandatory because Jenkins uses it to clone repositories.
+
+✅ Step 2 – Add GitHub Token in Jenkins
+
+Open Jenkins:
+
+Manage Jenkins → Credentials → Global → Add Credentials
+
+Choose:
+
+Kind → Username with password
+
+
+Fill:
+
+Field	Value
+Username	vinish (your GitHub username)
+Password	GitHub Personal Access Token
+ID	github-token
+
+Click Save.
+
+💡 Where to Get Token?
+
+GitHub → Settings → Developer Settings → Personal Access Tokens.
+
+✅ Step 3 – Create Freestyle Project
+
+Jenkins Dashboard → New Item
+
+Enter name:
+
+git-trial
+
+
+Select:
+
+Freestyle project
+
+
+Click OK.
+
+✅ Step 4 – Configure Source Code Management
+
+Inside job configuration:
+
+Source Code Management → Select Git
+Repository URL
+
+Example:
+
+https://github.com/vinish/terraform-dev.git
+
+Credentials
+
+Choose:
+
+github-token
+
+✅ Step 5 – Add Build Step (Verify Clone)
+
+Scroll → Build → Add build step → Execute shell
+
+Add commands:
+
+pwd
+ls -l
+
+
+This helps confirm files are present in workspace.
+
+✅ Step 6 – Save Job
+
+Click Save.
+
+✅ Step 7 – Build Now 🚀
+
+Click Build Now.
+
+After completion:
+Open build → Console Output.
+
+🎉 Expected Result
+
+You should see:
+
+Repository cloning
+
+Workspace path
+
+List of project files
+
+Example:
+
+/var/lib/jenkins/workspace/git-trial
+Dockerfile
+app.js
+package.json
+
+🧠 What You Learned
+
+How Jenkins authenticates with GitHub
+
+How repositories are cloned
+
+Workspace concept
+
+How to verify build execution
+
+
+  📌 What is Terraform?
+
+Terraform is an Infrastructure as Code (IaC) tool used to define, provision, and manage cloud and on-prem resources using configuration files.
+
+Instead of manually creating servers, networks, or security groups, we write code.
+
+🧭 Terraform Workflow
+Write → Init → Validate → Plan → Apply → Verify → Destroy (if needed)
+
+1️⃣ Write Configuration Files
+
+Create .tf files describing the infrastructure.
+
+Example resources:
+
+Provider (AWS/Azure/GCP)
+
+Virtual machines / EC2
+
+Security groups
+
+Key pairs
+
+Networks
+
+Example:
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "myvm" {
+  ami           = "ami-xxxxxxxx"
+  instance_type = "t3.micro"
+}
+
+2️⃣ Initialize Terraform
+terraform init
+
+
+What happens:
+
+Downloads provider plugins
+
+Prepares backend
+
+Creates .terraform folder
+
+Locks provider versions
+
+Run this first time or whenever providers change.
+
+3️⃣ Validate Configuration
+terraform validate
+
+
+Checks:
+✔ syntax
+✔ required arguments
+✔ internal consistency
+
+Does not contact cloud.
+
+4️⃣ Preview Changes (Execution Plan)
+terraform plan
+
+
+Shows:
+
+What will be created
+
+What will be modified
+
+What will be destroyed
+
+No resources are built yet.
+
+Think of it as a dry run.
+
+5️⃣ Apply Changes
+terraform apply
+
+
+Terraform will:
+
+Ask for confirmation
+
+Create resources in the cloud
+
+Generate/update terraform.tfstate
+
+You can skip confirmation:
+
+terraform apply -auto-approve
+
+6️⃣ Verify Resources
+
+After apply:
+
+Login to cloud console
+
+Check instances
+
+Verify IP, security rules, etc.
+
+7️⃣ Update Infrastructure
+
+Modify .tf files → run:
+
+terraform plan
+terraform apply
+
+
+Terraform compares state vs new config and adjusts.
+
+8️⃣ Destroy Infrastructure (Avoid Billing 💰)
+terraform destroy
+
+
+Deletes everything defined in .tf files.
+
+Useful for:
+
+Labs
+
+Practice
+
+Avoiding unexpected charges
+
+📂 Important Terraform Files
+File	Purpose
+.tf	Infrastructure definition
+terraform.tfstate	Current infrastructure record
+.terraform/	Provider plugins
+terraform.tfvars	Variable values
+🧠 Terraform Core Concepts
+
+Providers
+
+Resources
+
+Variables
+
+Outputs
+
+State management
+
+Execution plan
+
+⚡ Quick Command Summary
+terraform init
+terraform validate
+terraform plan
+terraform apply
+terraform destroy
+
+
+
+🔁 Master–Slave Architecture
+
+Master–Slave (also called Primary–Replica or Leader–Follower) is a system design where one main node controls and other nodes follow its instructions.
+
+It is widely used in databases, distributed systems, and DevOps pipelines.
+
+📌 Basic Idea
+
+Master → makes decisions, accepts writes/updates
+
+Slaves → replicate data, serve reads, execute assigned tasks
+
+🧭 How It Works
+Client → Master → Slaves
+           ↓
+       Replication
+
+
+Client sends request to Master.
+
+Master processes it.
+
+Changes are copied to Slave nodes.
+
+Slaves stay synchronized.
+
+🎯 Responsibilities
+Master Node
+
+Accepts write operations
+
+Maintains authoritative data
+
+Sends updates to slaves
+
+Handles coordination
+
+Slave Nodes
+
+Receive replicated data
+
+Serve read requests
+
+Provide backup / redundancy
+
+Reduce master load
+
+✅ Advantages
+
+✔ High availability
+✔ Load balancing
+✔ Backup & recovery
+✔ Better performance for reads
+✔ Scalability
+
+❌ Disadvantages
+
+❌ Master is single point of failure (if no failover)
+❌ Replication delay may occur
+❌ Setup can be complex
+
+🧱 Real-World Examples
+
+Master–Slave is used in:
+
+MySQL replication
+
+Redis primary–replica
+
+Apache Hadoop NameNode & DataNodes
+
+CI/CD controller & agents
+
+🔄 Failover (Advanced)
+
+If Master fails:
+
+One Slave can be promoted as new Master
+
+System continues working
+
+This improves reliability.
+
+📊 Use Cases
+
+Database replication
+
+Distributed computing
+
+Data backup
+
+Read-heavy applications
+
+Cluster management
