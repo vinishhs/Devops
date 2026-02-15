@@ -1,0 +1,173 @@
+📦 Ansible Automation Process
+
+Ansible is an agentless automation tool used for:
+
+Configuration management
+
+Application deployment
+
+Provisioning
+
+Orchestration
+
+It connects to target machines using SSH and executes tasks defined in YAML playbooks.
+
+🧭 Step-by-Step Ansible Flow
+1️⃣ Install Ansible (Control Node)
+
+Install Ansible on the machine from where automation will run.
+
+sudo apt update
+sudo apt install ansible -y
+
+Verify
+ansible --version
+
+2️⃣ Prepare Managed Nodes
+
+Ensure the target systems have:
+
+SSH enabled
+
+Python installed
+
+Network connectivity from control node
+
+Test manually
+ssh user@target-ip
+
+
+If login works without issues, Ansible can manage the host.
+
+3️⃣ Create Inventory File
+
+Inventory defines which machines Ansible should manage.
+
+Default location:
+
+/etc/ansible/hosts
+
+
+Example:
+
+[web]
+192.168.1.10
+
+[db]
+192.168.1.20
+
+
+You can also create a custom inventory file.
+
+4️⃣ Test Connectivity (Ping Module)
+ansible all -m ping
+
+
+Expected result:
+
+SUCCESS
+
+
+This confirms SSH + Python access.
+
+5️⃣ Write a Playbook
+
+Playbooks are written in YAML and describe the desired state.
+
+Example – install_nginx.yml
+---
+- name: Install Nginx
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+6️⃣ Run the Playbook
+ansible-playbook install_nginx.yml
+
+
+Ansible will:
+
+Connect to hosts
+
+Execute tasks
+
+Show results
+
+7️⃣ Verify Changes
+
+Login to the managed node and confirm.
+
+systemctl status nginx
+
+
+Or check in browser:
+
+http://<server-ip>
+
+🧠 What Happens Internally?
+
+Reads inventory
+
+Connects via SSH
+
+Transfers module
+
+Executes tasks
+
+Returns output
+
+Cleans temporary files
+
+No agent installation required.
+
+📁 Recommended Project Structure
+ansible-project/
+│── inventory
+│── playbook.yml
+│── roles/
+│── group_vars/
+│── host_vars/
+
+
+This structure helps in organizing large environments.
+
+🚀 Common Ad-Hoc Commands
+
+Ad-hoc commands are one-time operations without writing playbooks.
+
+Install Package
+ansible web -m apt -a "name=git state=present" --become
+
+Restart Service
+ansible web -m service -a "name=nginx state=restarted" --become
+
+Check Disk Space
+ansible all -m command -a "df -h"
+
+🔐 Key Features of Ansible
+
+✔ Agentless architecture
+✔ Uses SSH (secure)
+✔ Human-readable YAML
+✔ Idempotent (no repeated unnecessary changes)
+✔ Easy to scale to hundreds of servers
+✔ Strong community modules
+
+🎯 Skills Gained
+
+Setting up control & managed nodes
+
+Writing playbooks
+
+Using modules
+
+Automating installations
+
+Running ad-hoc commands
+
+Understanding infrastructure automation
