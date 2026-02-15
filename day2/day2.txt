@@ -1,1 +1,199 @@
 
+DevOps Project – Docker & Git Implementation
+🌐 IPv4 – Address Allocation
+
+IPv4 is a 32-bit addressing scheme used to uniquely identify devices on a network.
+Example format: 192.168.1.10 (four octets, each 0–255).
+
+Types of IP Assignment
+1️⃣ Static IP
+
+Manually configured.
+
+Does not change.
+
+Commonly used for servers and network devices.
+
+2️⃣ Dynamic IP
+
+Automatically assigned by DHCP.
+
+May change after reconnect.
+
+Used for personal systems like laptops.
+
+Purpose
+
+Ensures communication between devices by providing a unique address.
+
+🐳 Docker Overview
+
+Docker is a platform that allows applications to run inside containers.
+
+A container packages:
+
+Application code
+
+Dependencies
+
+Runtime
+
+Configuration
+
+This guarantees the application runs the same in development, testing, and production.
+
+Why Docker?
+
+Portable across systems
+
+Lightweight compared to VMs
+
+Faster startup
+
+Consistent environments
+
+Easy scaling
+
+Important Docker Terms
+Term	Meaning
+Image	Template used to create containers
+Container	Running instance of an image
+Dockerfile	Script containing build instructions
+Registry	Storage for images (e.g., Docker Hub)
+📦 Project 1 – Docker Sample (Node.js)
+Application Purpose
+
+A small web server that returns a message when accessed from a browser.
+
+🐳 Dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["node", "app.js"]
+
+🐳 Docker Commands
+Build Image
+docker build -t docker-sample .
+
+Run Container
+docker run -d -p 3000:3000 --name docker_sample_app docker-sample
+
+Verify Running Containers
+docker ps
+
+Stop Container
+docker stop docker_sample_app
+
+Access Application
+http://localhost:3000
+
+
+or using server IP:
+
+http://<server-ip>:3000
+
+📦 Project 2 – E-Commerce Container
+Build
+docker build -t ecommerce-app .
+
+Run
+docker run -d -p 8080:80 ecommerce-app
+
+Access
+http://localhost:8080
+
+🐳 Docker Hub Operations
+
+Docker Hub is a cloud registry for storing and sharing images.
+
+Login
+docker login
+
+Tag Image
+docker tag ecommerce-app vinishhs/ecommerce:latest
+
+Push
+docker push vinish/ecommerce:latest
+
+Pull (another system)
+docker pull vinish/ecommerce:latest
+
+🔧 Git & GitHub Workflow
+Initialize Repository
+git init
+
+Add Files
+git add .
+
+Commit
+git commit -m "Initial commit"
+
+Connect Remote Repo
+git remote add origin git@github.com:vinishhs/devops.git
+
+Push Code
+git branch -M main
+git push -u origin main
+
+⚠️ Merge Conflict – Scenario & Fix
+Why It Happened
+
+Remote repository already contained files (e.g., README).
+Local history was different.
+
+Error
+failed to push some refs
+
+Resolution Steps
+Pull Remote
+git pull origin main --allow-unrelated-histories
+
+Edit Conflict Markers
+
+Fix differences manually.
+
+Commit Again
+git add .
+git commit -m "Resolved merge conflict"
+
+Push
+git push origin main
+
+📜 Useful Commands Practiced
+whoami
+docker --version
+git --version
+ip a
+whoami
+sudo apt update
+sudo apt upgrade -y
+sudo apt install docker-ce docker-ce-cli containerd.io
+docker --version
+git clone https://github.com/jagadeeshkanna97/docker_sample
+cd docker_sample
+docker build -t docker-sample .
+docker run -d -p 3000:3000 docker-sample
+ip a
+ssh sowmiya@192.168.186.128
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin git@github.com:vinishhs/devops.git
+git push -u origin main
+
+✅ Skills Gained
+
+Building Docker images
+
+Running multi-container applications
+
+Publishing images to registry
+
+Version control using Git
+
+Handling merge conflicts
+
+Connecting local and remote repositories
