@@ -1,1 +1,247 @@
+🐳 Docker & GitHub Push – Ubuntu Commands
+Docker Hub Login
+sudo docker login
 
+Tag Image
+docker tag ecommerce-app vinish/ecommerce:latest
+
+Push Image to Docker Hub
+docker push vinish/ecommerce:latest
+
+Verify Image in Registry
+
+Visit Docker Hub in browser and confirm the repository is updated.
+
+🔧 Git Push to GitHub
+Initialize Repository
+git init
+
+Add Files
+git add .
+
+Commit
+git commit -m "New e-commerce project"
+
+Add Remote Repository
+git remote add origin https://github.com/vinish/devops.git
+
+Push to GitHub
+git branch -M main
+git push -u origin main
+
+Check Remote URL
+git remote -v
+
+🖥 VMware Ubuntu – System & Network Checks
+cat /etc/os-release      # Ubuntu version
+ip a                     # Show IP address
+ping -c 3 google.com     # Test internet
+
+
+(ifconfig is old and may not exist by default in modern Ubuntu)
+
+📘 Git – Basic Explanation
+
+Git is a version control system used to track changes in source code and support collaboration.
+
+It allows:
+
+History tracking
+
+Branching & merging
+
+Backup of code
+
+Team development
+
+Main Branch
+
+Default branch of the repository.
+
+Usually named main.
+
+Contains stable and production-ready code.
+
+Feature Branch
+
+Created from main.
+
+Used to develop features or fixes.
+
+Merged back after testing.
+
+Example flow:
+
+main → feature-login → merge → main
+
+🔄 Git Workflow (Ubuntu → GitHub)
+1️⃣ Create Project
+mkdir myproject
+cd myproject
+
+2️⃣ Initialize
+git init
+
+3️⃣ Create or Modify Files
+touch file.txt
+echo "Hello World" > file.txt
+echo "Second line" >> file.txt
+
+
+> overwrite
+>> append
+
+4️⃣ Add
+git add .
+
+5️⃣ Commit
+git commit -m "Added file"
+
+6️⃣ Connect Remote
+git remote add origin https://github.com/vinish/devops.git
+
+7️⃣ Push
+git push -u origin main
+
+📌 Git Concepts
+Updating Files
+
+Whenever a change is made:
+
+git add .
+git commit -m "Updated"
+git push
+
+Git History
+git log
+
+
+Each commit contains:
+
+Unique hash
+
+Author
+
+Date
+
+Message
+
+HEAD
+
+HEAD points to the latest commit in the current branch.
+
+⚠️ Merge Conflict – Scenario & Fix
+Reason
+
+Remote repository already had files, but local history differed.
+
+Error
+failed to push some refs
+
+Fix
+Pull
+git pull origin main --allow-unrelated-histories
+
+Edit conflicting file
+
+Remove markers and keep correct content.
+
+Commit
+git add .
+git commit -m "Resolved merge conflict"
+
+Push
+git push origin main
+
+🐳 Docker – CI/CD Flow
+Tools Used
+
+Ubuntu
+
+GitHub
+
+Node.js
+
+Docker
+
+Jenkins
+
+Flow
+Developer → GitHub → Jenkins → Docker Build → Deploy → Application Live
+
+🔧 Jenkins
+What is Jenkins?
+
+Jenkins is an open-source automation server used for:
+
+Continuous Integration (CI)
+
+Continuous Deployment (CD)
+
+It automatically builds, tests, and deploys applications.
+
+Why Jenkins?
+
+Reduces manual effort
+
+Faster releases
+
+Improves reliability
+
+Detects issues early
+
+⚙️ Jenkins Installation (Ubuntu)
+1️⃣ Install Java (Required)
+sudo apt update
+sudo apt upgrade
+sudo apt install openjdk-21-jdk
+java --version
+
+2️⃣ Install Jenkins
+sudo apt install jenkins
+sudo systemctl status jenkins
+
+3️⃣ Start / Stop Service
+sudo systemctl start jenkins
+sudo systemctl stop jenkins
+sudo systemctl restart jenkins
+
+4️⃣ Fix Permissions (if needed)
+sudo chown -R jenkins:jenkins /var/lib/jenkins
+
+5️⃣ View Logs
+journalctl -u jenkins
+
+6️⃣ Access Jenkins Web UI
+
+Open browser:
+
+http://<server-ip>:8080
+
+
+Get initial password:
+
+cat /var/lib/jenkins/secrets/initialAdminPassword
+
+
+Then:
+
+Install suggested plugins
+
+Create admin user
+
+Configure jobs
+
+✅ Skills Achieved
+
+Docker image build & publish
+
+GitHub integration
+
+Branching & merging
+
+Conflict resolution
+
+CI/CD pipeline understanding
+
+Jenkins setup & monitoring
