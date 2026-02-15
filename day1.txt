@@ -1,0 +1,180 @@
+🖥️ LINUX, WINDOWS, VM & BASIC COMMANDS
+WINDOWS OS
+
+Windows is a paid, GUI-based operating system developed by Microsoft.
+It is widely used for personal computers, office work, and gaming.
+
+Command-line interfaces available:
+
+Command Prompt
+
+PowerShell
+
+Windows is user-friendly but offers less control for low-level system configuration compared to Linux.
+
+LINUX OPERATING SYSTEM
+
+Linux is free and open-source.
+It is known for stability, security, and is heavily used in servers, cloud, and DevOps environments.
+
+Most tasks are performed using the terminal, which enables automation and scripting.
+
+Popular distributions:
+
+Ubuntu
+
+CentOS
+
+Red Hat Enterprise Linux
+
+WINDOWS VS LINUX
+
+Windows is convenient for daily personal use.
+
+Linux is preferred in development and production because it offers:
+
+Strong security
+
+Better performance
+
+High customization
+
+Powerful automation
+
+Native DevOps tool support
+
+VIRTUAL MACHINE (VM)
+
+A Virtual Machine is a system that runs inside another computer.
+
+It allows multiple operating systems to share the same hardware.
+
+Example: Running Ubuntu inside Windows using VMware Workstation.
+
+Terms:
+
+Host OS → Main operating system
+
+Guest OS → OS running inside VM
+
+Network Modes:
+
+NAT → Uses host internet
+
+Bridged → Gets its own IP in the network
+
+WSL (Windows Subsystem for Linux)
+
+Windows Subsystem for Linux allows Linux commands to run directly on Windows without creating a virtual machine.
+
+Advantages
+
+Fast startup
+
+Lightweight
+
+Easy file sharing with Windows
+
+Limitation
+
+Not full virtualization
+
+Limited for advanced server simulations
+
+VMWARE
+
+VMware Workstation is used to create and manage virtual machines.
+
+Basic workflow:
+Install VMware → Load OS ISO → Install OS → Start practicing.
+
+UBUNTU INSTALLATION (BASIC FLOW)
+
+Create a new VM
+
+Attach ISO file
+
+Allocate CPU / RAM / Disk
+
+Set username & password
+
+Complete installation
+
+Reboot
+
+After login:
+
+sudo apt update
+sudo apt upgrade
+
+IMPORTANT LINUX COMMANDS
+File & Directory
+pwd     -> Show current path
+ls      -> List files
+cd      -> Change directory
+mkdir   -> Create folder
+rmdir   -> Remove empty folder
+touch   -> Create file
+cp      -> Copy
+mv      -> Move / rename
+rm      -> Delete
+
+Viewing & Searching
+cat     -> Show content
+less    -> Page view
+head    -> First lines
+tail    -> Last lines
+grep    -> Search text
+
+Permissions & Ownership
+chmod   -> Change permission
+chown   -> Change owner
+
+System & Network
+top     -> Running processes
+ps      -> Process status
+df -h   -> Disk usage
+free -m -> Memory usage
+ip a    -> IP address
+ping    -> Check connectivity
+
+PACKAGE MANAGEMENT
+
+APT is the package manager in Ubuntu.
+
+sudo apt update
+sudo apt upgrade
+sudo apt install <package>
+sudo apt remove <package>
+
+
+Used to install DevOps tools like Git, Docker, Jenkins, etc.
+
+VI EDITOR BASICS
+i     -> Insert mode
+Esc   -> Command mode
+:w    -> Save
+:q    -> Quit
+:wq   -> Save & quit
+:q!   -> Quit without saving
+
+LTS (LONG TERM SUPPORT)
+
+LTS releases receive:
+
+Long-term security updates
+
+Stability patches
+
+Enterprise reliability
+
+Recommended for servers and production.
+
+rm -rf (DANGEROUS COMMAND)
+rm -rf <file/folder>
+
+
+Deletes files recursively and permanently.
+
+⚠ Use carefully.
+A wrong path can remove the entire system.
