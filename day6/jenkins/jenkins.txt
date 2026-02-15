@@ -1,0 +1,129 @@
+🚀 Jenkins Freestyle Job – GitHub Integration
+🎯 Goal
+
+Connect a GitHub repository to Jenkins and verify that the code is successfully cloned into the Jenkins workspace.
+
+Flow
+
+GitHub → Jenkins Freestyle Job → Workspace
+
+✅ Step 1 – Ensure Git is Installed on Jenkins Machine
+
+In Ubuntu VM:
+
+git --version
+
+
+If not installed:
+
+sudo apt install git -y
+
+
+Git is mandatory because Jenkins uses it to clone repositories.
+
+✅ Step 2 – Add GitHub Token in Jenkins
+
+Open Jenkins:
+
+Manage Jenkins → Credentials → Global → Add Credentials
+
+Choose:
+
+Kind → Username with password
+
+
+Fill:
+
+Field	Value
+Username	vinish (your GitHub username)
+Password	GitHub Personal Access Token
+ID	github-token
+
+Click Save.
+
+💡 Where to Get Token?
+
+GitHub → Settings → Developer Settings → Personal Access Tokens.
+
+✅ Step 3 – Create Freestyle Project
+
+Jenkins Dashboard → New Item
+
+Enter name:
+
+git-trial
+
+
+Select:
+
+Freestyle project
+
+
+Click OK.
+
+✅ Step 4 – Configure Source Code Management
+
+Inside job configuration:
+
+Source Code Management → Select Git
+Repository URL
+
+Example:
+
+https://github.com/vinish/terraform-dev.git
+
+Credentials
+
+Choose:
+
+github-token
+
+✅ Step 5 – Add Build Step (Verify Clone)
+
+Scroll → Build → Add build step → Execute shell
+
+Add commands:
+
+pwd
+ls -l
+
+
+This helps confirm files are present in workspace.
+
+✅ Step 6 – Save Job
+
+Click Save.
+
+✅ Step 7 – Build Now 🚀
+
+Click Build Now.
+
+After completion:
+Open build → Console Output.
+
+🎉 Expected Result
+
+You should see:
+
+Repository cloning
+
+Workspace path
+
+List of project files
+
+Example:
+
+/var/lib/jenkins/workspace/git-trial
+Dockerfile
+app.js
+package.json
+
+🧠 What You Learned
+
+How Jenkins authenticates with GitHub
+
+How repositories are cloned
+
+Workspace concept
+
+How to verify build execution
