@@ -1,0 +1,336 @@
+Jenkins Setup & CI/CD – Ubuntu Guide
+✅ 1) Install Jenkins (Ubuntu)
+Step 1 – Update Packages
+sudo apt update
+
+Step 2 – Install Java (Required)
+
+Jenkins requires Java to run.
+
+sudo apt install openjdk-17-jre -y
+
+Verify
+java -version
+
+Step 3 – Add Jenkins Repository Key
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+/usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+Step 4 – Add Repository
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+/etc/apt/sources.list.d/jenkins.list > /dev/null
+
+Step 5 – Install Jenkins
+sudo apt update
+sudo apt install jenkins -y
+
+Step 6 – Start & Enable Jenkins
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+
+Check Status
+sudo systemctl status jenkins
+
+Step 7 – Open Jenkins UI
+http://<server-ip>:8080
+
+
+Example:
+
+http://localhost:8080
+
+Step 8 – Get Initial Admin Password
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+
+Copy → paste into browser.
+
+Step 9 – Install Plugins
+
+Click:
+
+Install Suggested Plugins
+
+✅ 2) Create User Account
+
+After plugins install:
+
+Click Create First Admin User
+Enter:
+
+Username
+
+Password
+
+Name
+
+Email
+
+Save → Jenkins Dashboard opens.
+
+Create More Users Later
+
+Manage Jenkins → Manage Users → Create User
+
+🆕 Create New Freestyle Job (Name: devops)
+
+Dashboard → New Item
+
+Enter name → devops
+
+Select → Freestyle Project
+
+Click OK → Save
+
+🔔 What is a Trigger in Jenkins?
+
+A trigger tells Jenkins WHEN to run a job automatically.
+
+Examples:
+
+Code push
+
+Time schedule
+
+After another job
+
+Common Trigger Types
+
+Inside job → Build Triggers
+
+✔ Poll SCM
+✔ Build periodically
+✔ GitHub webhook
+✔ Build after other projects
+
+🔄 Upstream & Downstream Example
+Create job1 & job2
+
+New Item → job1 → Save
+New Item → job2 → Save
+
+Configure job1 to trigger job2
+
+job1 → Configure → Post-build Actions → Build other projects
+
+Enter:
+
+job2
+
+
+Select:
+
+Trigger only if build is stable
+
+
+Save.
+
+Test Flow
+
+Build job1.
+
+Result:
+
+job1 → job2
+
+Term	Meaning
+Upstream	Runs first
+Downstream	Runs after success
+
+Used in multi-stage CI/CD.
+
+🚀 Jenkins Pipeline
+
+Pipeline = automation using code instead of manual configuration.
+
+CI/CD Flow
+GitHub → Jenkins → Build → Deploy → Live Application
+
+Step 1 – Push Code to GitHub
+
+Repository should contain:
+
+Dockerfile
+
+app.js / server.js
+
+package.json
+
+git init
+git add .
+git commit -m "initial"
+git branch -M main
+git remote add origin https://github.com/vinish/devops.git
+git push -u origin main
+
+Step 2 – Install Required Plugins
+
+Manage Jenkins → Manage Plugins
+
+Install:
+
+Git Plugin
+
+Docker Pipeline
+
+Restart Jenkins.
+
+Step 3 – Create Pipeline Job
+
+New Item →
+Name: devops-pipeline
+Select → Pipeline → OK
+
+Step 4 – Pipeline Script (Example)
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vinish/devops.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build || echo "No build step"'
+            }
+        }
+    }
+}
+
+Step 5 – Run
+
+Click Build Now.
+
+Jenkins executes stage-by-stage and shows results in Stage View.
+
+Step 6 – Access App
+http://localhost:7000
+
+
+or
+
+http://<public-ip>:7000
+
+
+Example output:
+
+Hello Vinish – Jenkins deployment successful
+
+⚙️ Jenkins Core
+
+Jenkins Core is the main engine.
+
+It handles:
+
+Job execution
+
+Scheduling
+
+UI
+
+API
+
+Agent communication
+
+Plugins extend its features.
+
+📝 What is a .sh File?
+
+.sh = Shell script containing Linux commands.
+
+Example:
+
+#!/bin/bash
+echo "Build started"
+docker build -t app .
+
+
+Run inside Jenkins:
+
+sh script.sh
+
+
+Benefits:
+
+Reusable
+
+Version controlled
+
+Easy automation
+
+🔐 sudo chmod +x
+sudo chmod +x script.sh
+
+
+Makes file executable.
+
+Run using:
+
+./script.sh
+
+
+Without it → permission denied.
+
+⏰ Scheduled Builds (Cron)
+
+Used in Build periodically.
+
+Format:
+
+MIN HOUR DAY MONTH DAY-OF-WEEK
+
+
+Examples:
+
+Expression	Meaning
+H/5 * * * *	Every 5 mins
+0 9 * * *	Daily at 9 AM
+0 0 * * 0	Every Sunday
+🔗 GitHub Auto Trigger (Webhook)
+
+In Jenkins job:
+✔ Enable → GitHub hook trigger
+
+In GitHub:
+Settings → Webhooks
+
+Payload URL:
+
+http://<server-ip>:8080/github-webhook/
+
+
+Now every push → automatic build.
+
+✅ Complete CI/CD Flow
+Developer Push →
+GitHub →
+Jenkins →
+Build →
+Deploy →
+Application Live
+
+🎯 Skills Learned
+
+Jenkins installation
+
+User & job management
+
+Freestyle vs Pipeline
+
+Automation using scripts
+
+Webhook integration
+
+Upstream/downstream chaining
+
+Scheduled builds
