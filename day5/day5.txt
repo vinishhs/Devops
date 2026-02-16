@@ -1,1 +1,243 @@
+AWS EC2 Lab – Windows & Ubuntu with Apache + GitHub Deployment
 
+This lab demonstrates how to create AWS EC2 instances, connect to Linux and Windows servers, install an Apache web server, and deploy a project from GitHub.
+
+✅ Part 1 – Create a Key Pair
+
+Log in to the AWS Management Console.
+
+Navigate to EC2 → Key Pairs → Create key pair.
+
+Provide:
+
+Name: devops-key
+
+Type: RSA
+
+Format: .pem
+
+Download the key and store it securely.
+⚠️ Do not share this file. It is required to access your servers.
+
+✅ Part 2 – Launch Ubuntu Instance
+
+Go to EC2 → Launch Instance.
+
+Configure:
+
+Name: ubuntu-apache
+
+AMI: Ubuntu Server 22.04
+
+Instance type: t2.micro (Free Tier)
+
+Key pair: devops-key
+
+In Network/Security Group:
+
+Allow SSH (22)
+
+Allow HTTP (80)
+
+Click Launch.
+
+✅ Part 3 – Launch Windows Instance
+
+Go to EC2 → Launch Instance.
+
+Configure:
+
+Name: windows-server
+
+AMI: Microsoft Windows Server
+
+Instance type: t2.micro
+
+Key pair: devops-key
+
+In Network/Security Group:
+
+Allow RDP (3389)
+
+Launch the instance.
+
+💻 Part 4 – Connect to Ubuntu via SSH
+
+Open a terminal in the folder containing your .pem file.
+
+Give permission to the key:
+
+chmod 400 devops-key.pem
+
+
+Connect:
+
+ssh -i devops-key.pem ubuntu@<PUBLIC-IP>
+
+
+Example:
+
+ssh -i devops-key.pem ubuntu@15.206.xx.xx
+
+🌐 Part 5 – Install Apache Web Server
+
+Update packages:
+
+sudo apt update
+
+
+Install Apache:
+
+sudo apt install apache2 -y
+
+
+Start Apache:
+
+sudo systemctl start apache2
+
+
+Enable Apache on boot:
+
+sudo systemctl enable apache2
+
+
+Verify:
+
+sudo systemctl status apache2
+
+🧪 Part 6 – Test Apache Default Page
+
+Open in browser:
+
+http://<ubuntu-public-ip>
+
+
+You should see the default Apache page.
+
+📝 Part 7 – Create a Custom HTML Page
+
+Move to web root:
+
+cd /var/www/html
+
+
+Remove default file:
+
+sudo rm index.html
+
+
+Create a new file:
+
+sudo nano index.html
+
+
+Add:
+
+<h1>Server Working Successfully</h1>
+<h2>DevOps Lab – Vinish</h2>
+
+
+Save → CTRL + X → Y → ENTER
+
+Refresh the browser to confirm.
+
+📥 Part 8 – Install Git
+sudo apt install git -y
+
+
+Check version:
+
+git --version
+
+🚀 Part 9 – Deploy GitHub Project to Apache
+
+Clone the repository into a temporary folder:
+
+cd /tmp
+git clone https://github.com/vinishhs/todo.git
+
+
+Check contents:
+
+cd todo
+ls
+
+
+Copy files to Apache directory:
+
+sudo cp -r * /var/www/html/
+
+
+Set permissions:
+
+sudo chmod -R 755 /var/www/html
+
+
+Restart Apache:
+
+sudo systemctl restart apache2
+
+
+Access in browser:
+
+http://<PUBLIC-IP>
+
+
+Your To-Do application should now load.
+
+🪟 Part 10 – Connect to Windows Server (RDP)
+
+EC2 → Instances → select Windows server.
+
+Click Connect → RDP client.
+
+Click Get Password.
+
+Upload devops-key.pem.
+
+Decrypt and copy credentials.
+
+On your local machine:
+
+Win + R → mstsc
+
+
+Enter the public IP and login.
+
+📸 Part 11 – Take Screenshot in Windows
+
+Inside the RDP session, use:
+
+Snipping Tool, or
+
+PrtSc (Print Screen)
+
+Save the image for documentation.
+
+🚪 Part 12 – Exit Windows Server
+
+You can either:
+
+Close the RDP window, or
+
+Start → Sign out
+
+🧹 Part 13 – Stop / Terminate Instances (Avoid Charges)
+
+After completing the lab:
+
+EC2 → Instances → Select machine → Instance State
+
+Stop (temporary)
+or
+
+Terminate (permanent)
+
+✅ Final Expected Outcome
+
+✔ Ubuntu instance accessible
+✔ Apache installed and running
+✔ Custom test page displayed
+✔ GitHub project deployed successfully
+✔ Windows login verified
+✔ Resources stopped to prevent billing
