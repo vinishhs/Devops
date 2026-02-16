@@ -1,0 +1,337 @@
+🚀 DevOps Automation – End-to-End Flow
+
+This document describes a common DevOps lifecycle: from pulling source code to automation, infrastructure provisioning, configuration management, and distributed architecture.
+
+Overall Pipeline
+
+GitHub Repository → Jenkins Job → Infrastructure → Configuration → Execution
+
+🔧 GitHub → Jenkins Freestyle Job → Workspace
+🎯 Goal
+
+Fetch code from GitHub into the Jenkins workspace and execute build or validation steps.
+
+1) Install Git on Jenkins Machine
+
+Check:
+
+git --version
+
+
+If missing:
+
+sudo apt install git -y
+
+2) Add GitHub Credentials in Jenkins
+
+Navigate:
+
+Manage Jenkins → Credentials → Global → Add Credentials
+
+Choose:
+
+Kind: Username with password
+
+Fill:
+
+Username: GitHub username
+
+Password: GitHub Personal Access Token
+
+ID: github-token
+
+Save.
+
+3) Create a Freestyle Project
+
+From Jenkins dashboard:
+
+New Item →
+Name: git-trial →
+Select Freestyle project → OK.
+
+4) Configure Source Code Management
+
+Under Source Code Management:
+
+Select Git
+
+Repository URL:
+
+https://github.com/vinishhs/yourrepo.git
+
+
+Credentials: github-token
+
+5) Add Build Step
+
+Build → Add build step → Execute shell
+
+pwd
+ls -l
+
+
+This confirms the repository has been cloned into the workspace.
+
+6) Save the Project
+
+Click Save.
+
+7) Build Now
+
+Click Build Now and open Console Output.
+
+✅ Expected: repository files are visible in the Jenkins workspace.
+
+📦 Ansible Automation Process
+What is Ansible?
+
+Ansible is an agentless automation platform used for:
+
+Configuration management
+
+Application deployment
+
+Server orchestration
+
+It connects over SSH and executes tasks written in YAML playbooks.
+
+Step-by-Step Flow
+1) Install Ansible (Control Node)
+sudo apt update
+sudo apt install ansible -y
+
+
+Verify:
+
+ansible --version
+
+2) Prepare Managed Nodes
+
+Make sure:
+
+SSH is enabled
+
+Python is installed
+
+Nodes are reachable
+
+Test:
+
+ssh user@target-ip
+
+3) Create an Inventory File
+
+Example:
+
+[web]
+192.168.1.10
+
+[db]
+192.168.1.20
+
+4) Test Connectivity
+ansible all -m ping
+
+
+✅ Expected → SUCCESS.
+
+5) Write a Playbook
+
+Example:
+
+---
+- name: Install Nginx
+  hosts: web
+  become: yes
+
+  tasks:
+    - name: Install nginx package
+      apt:
+        name: nginx
+        state: present
+
+6) Run Playbook
+ansible-playbook install_nginx.yml
+
+7) Verify on Target
+systemctl status nginx
+
+Internal Working of Ansible
+
+Reads inventory
+
+Connects via SSH
+
+Pushes required modules
+
+Executes tasks
+
+Returns results
+
+Cleans temporary files
+
+Common Ad-Hoc Commands
+
+Install package:
+
+ansible web -m apt -a "name=git state=present" --become
+
+
+Restart service:
+
+ansible web -m service -a "name=nginx state=restarted" --become
+
+Advantages of Ansible
+
+✔ Agentless
+✔ SSH based
+✔ Simple YAML syntax
+✔ Idempotent operations
+✔ Easy horizontal scaling
+
+📌 Terraform Workflow (Infrastructure as Code)
+What is Terraform?
+
+Terraform allows you to provision and manage cloud infrastructure using declarative code instead of manual configuration.
+
+Lifecycle
+Write → Init → Validate → Plan → Apply → Verify → Destroy
+
+1) Write Configuration
+
+Example:
+
+provider "aws" {
+  region = "ap-south-1"
+}
+
+resource "aws_instance" "myvm" {
+  ami           = "ami-xxxxxxxx"
+  instance_type = "t3.micro"
+}
+
+2) Initialize
+terraform init
+
+
+Downloads provider plugins and prepares the working directory.
+
+3) Validate
+terraform validate
+
+
+Checks syntax only.
+
+4) Plan (Dry Run)
+terraform plan
+
+
+Shows proposed infrastructure changes.
+
+5) Apply
+terraform apply
+
+
+To skip confirmation:
+
+terraform apply -auto-approve
+
+6) Verify
+
+Confirm resources from the cloud console.
+
+7) Update Infrastructure
+
+Modify configuration → run:
+
+terraform plan
+terraform apply
+
+8) Destroy (Cost Control)
+terraform destroy
+
+
+Deletes all created resources.
+
+Important Terraform Files
+
+.tf → configuration
+
+terraform.tfstate → current state
+
+.terraform/ → downloaded plugins
+
+terraform.tfvars → variable values
+
+Quick Command Reference
+terraform init
+terraform validate
+terraform plan
+terraform apply
+terraform destroy
+
+🔁 Master–Slave Architecture
+
+Also known as Primary–Replica or Leader–Follower.
+
+Concept
+
+Master → accepts writes and controls coordination
+
+Slaves → replicate data and serve read traffic
+
+Working Model
+Client → Master → Slaves
+
+
+Master processes requests and propagates updates.
+
+Responsibilities
+
+Master
+
+Handles writes
+
+Source of truth
+
+Sends replication updates
+
+Maintains coordination
+
+Slaves
+
+Receive replicated data
+
+Serve read requests
+
+Provide backups
+
+Reduce master load
+
+Advantages
+
+✔ High availability
+✔ Load balancing
+✔ Redundancy
+✔ Scalability
+
+Disadvantages
+
+❌ Single point of failure (without failover)
+❌ Possible replication lag
+❌ More complex administration
+
+Real-World Usage
+
+Common in:
+
+Database replication
+
+Distributed platforms
+
+CI/CD controllers with worker nodes
+
+Failover Concept
+
+If the master fails, a replica can be promoted to become the new master.
