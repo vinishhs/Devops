@@ -1,0 +1,288 @@
+🚀 Jenkins Installation & CI/CD Guide (Ubuntu)
+✅ 1) Install Jenkins
+Step 1 – Update Packages
+sudo apt update
+
+Step 2 – Install Java (Required)
+sudo apt install openjdk-17-jre -y
+
+Verify
+java -version
+
+Step 3 – Add Jenkins Key
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+/usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+Step 4 – Add Repository
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+/etc/apt/sources.list.d/jenkins.list > /dev/null
+
+Step 5 – Install Jenkins
+sudo apt update
+sudo apt install jenkins -y
+
+Step 6 – Start & Enable Service
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+
+Check
+sudo systemctl status jenkins
+
+Step 7 – Access Jenkins
+http://<server-ip>:8080
+
+
+Example:
+
+http://localhost:8080
+
+Step 8 – Unlock Jenkins
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+
+Paste password in browser.
+
+Step 9 – Install Plugins
+
+Choose:
+
+Install Suggested Plugins
+
+✅ 2) Create Admin User
+
+Enter:
+
+Username
+
+Password
+
+Full name
+
+Email
+
+Click Save and Continue → Dashboard opens.
+
+Additional users:
+
+Manage Jenkins → Manage Users → Create User
+
+🆕 Create Freestyle Job (devops)
+
+Dashboard → New Item
+
+Name → devops
+
+Select → Freestyle Project
+
+OK → Save
+
+🔔 What is a Trigger?
+
+A trigger defines WHEN Jenkins should run automatically.
+
+Examples:
+
+GitHub push
+
+Scheduled time
+
+After another job
+
+Common Build Triggers
+
+✔ Poll SCM
+✔ Build periodically
+✔ GitHub hook
+✔ Build after other projects
+
+🔄 Upstream & Downstream Jobs
+
+Example flow:
+
+job1 → job2
+
+Role	Meaning
+Upstream	Runs first
+Downstream	Runs after success
+How to Configure
+
+job1 → Configure → Post-build Actions → Build other projects → add job2.
+
+🚀 Jenkins Pipeline
+
+Pipeline = CI/CD defined as code.
+
+Standard Flow
+GitHub → Jenkins → Build → Test → Deploy
+
+Step 1 – Push Code to GitHub
+
+Repository should contain:
+
+Dockerfile
+
+app.js / server.js
+
+package.json
+
+git init
+git add .
+git commit -m "initial"
+git branch -M main
+git remote add origin https://github.com/vinish/devops.git
+git push -u origin main
+
+Step 2 – Install Plugins
+
+Manage Jenkins → Manage Plugins → install:
+
+Git
+
+Docker Pipeline
+
+Restart Jenkins.
+
+Step 3 – Create Pipeline Job
+
+New Item → devops-pipeline → Pipeline → OK.
+
+Step 4 – Example Pipeline Script
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone Repo') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vinish/devops.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build || echo "No build step"'
+            }
+        }
+    }
+}
+
+Step 5 – Run
+
+Click Build Now.
+
+You will see:
+✔ Clone
+✔ Install
+✔ Build
+
+Step 6 – Access Application
+http://localhost:7000
+
+
+or
+
+http://<public-ip>:7000
+
+
+Example output:
+
+Hello Vinish – Jenkins deployment successful
+
+⚙️ Jenkins Core
+
+Jenkins Core is the main system responsible for:
+
+Running jobs
+
+Scheduling
+
+Managing agents
+
+Providing UI
+
+Plugins add extra functionality.
+
+📝 What is a Shell Script (.sh)?
+
+A file containing Linux commands.
+
+Example:
+
+#!/bin/bash
+echo "Build started"
+docker build -t app .
+
+
+Run in Jenkins:
+
+sh script.sh
+
+🔐 chmod +x
+sudo chmod +x script.sh
+
+
+Gives execution permission.
+
+Run:
+
+./script.sh
+
+⏰ Scheduled Builds (Cron Format)
+
+Used in Build periodically.
+
+Format:
+
+MIN HOUR DAY MONTH DAY-OF-WEEK
+
+
+Examples:
+
+Time	Expression
+Every 5 mins	H/5 * * * *
+Daily 9 AM	0 9 * * *
+Sunday midnight	0 0 * * 0
+🔗 GitHub Webhook Trigger
+
+In Jenkins:
+Enable → GitHub hook trigger.
+
+In GitHub:
+Settings → Webhooks.
+
+Payload:
+
+http://<server-ip>:8080/github-webhook/
+
+
+Now every push → auto build.
+
+✅ Complete CI/CD Flow
+Developer →
+GitHub →
+Jenkins →
+Docker Build →
+Deploy →
+Application Live
+
+🎯 Skills Acquired
+
+Jenkins installation & setup
+
+Job automation
+
+Trigger configuration
+
+Pipeline as code
+
+GitHub integration
+
+Webhook builds
+
+Multi-stage CI/CD
